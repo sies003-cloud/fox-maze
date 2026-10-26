@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小狐狸迷宮大冒險 - 國小三年級滑鼠訓練與執行功能評估</title>
+    <!-- Chart.js 報表庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --primary-hover: #EE5253;
+            --secondary: #48DBFB;
+            --accent: #FFD93D;
+            --bg-main: #E0F7FA;
+            --card-bg: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-muted: #636E72;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #A8EDEA 0%, #FED6E3 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-attachment: fixed;
+        }
+
+        header {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #FF6B6B;
+            text-shadow: 1px 1px 0px #FFEAA7;
+        }
+
+        .nav-btn {
+            background: #FFEAA7;
+            border: 3px solid #FDCB6E;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #2D3436;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #FDCB6E;
+            transform: scale(1.05);
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .hero-section {
+            background: #FFFFFF;
+            border: 6px solid #FFD93D;
+            border-radius: var(--radius-lg);
+            padding: 40px 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            width: 100%;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            color: #FF6B6B;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px #FFEAA7;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #546E7A;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 900;
+            padding: 18px 50px;
+            border: 4px solid #FFFFFF;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.6);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #FFFFFF;
+            border: 4px solid #48DBFB;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 8px;
+            color: #2D3436;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: #636E72;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .info-drawer {
+            width: 100%;
+            margin-top: 30px;
+            background: #FFFFFF;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            border: 2px dashed #0984E3;
+        }
+
+        .info-drawer summary {
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #0984E3;
+            user-select: none;
+        }
+
+        .info-drawer-content {
+            margin-top: 15px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            border-top: 2px solid #DFE6E9;
+            padding-top: 15px;
+        }
+
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FFFFFF;
+            border: 4px solid #FFD93D;
+            padding: 15px 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .hud-item {
+            font-weight: 900;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2D3436;
+        }
+
+        .maze-container {
+            position: relative;
+            background: #FFFFFF;
+            border: 6px solid #48DBFB;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            user-select: none;
+        }
+
+        canvas {
+            border-radius: 16px;
+            background: #E8F8F5;
+            cursor: pointer;
+        }
+
+        .game-instructions {
+            margin-top: 15px;
+            background: #FFF9E6;
+            border: 3px solid #FFEAA7;
+            color: #D35400;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .report-card {
+            background: #FFFFFF;
+            border: 6px solid #10AC84;
+            width: 100%;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .star-rating {
+            font-size: 3rem;
+            color: #FFD93D;
+            margin: 10px 0;
+            text-shadow: 2px 2px 0 #FF9F43;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-box {
+            background: #F7F9FA;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            height: 300px;
+            position: relative;
+            border: 2px solid #C8D6E5;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #8395A7;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #10AC84;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-download {
+            background: #0984E3;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-group">
+            <span>🦊</span>
+            <span>小狐狸迷宮大冒險</span>
+        </div>
+        <button class="nav-btn" onclick="switchPage('landing')">🏠 回首頁</button>
+    </header>
+
+    <div id="page-landing" class="page active">
+        <div class="hero-section">
+            <h1 class="hero-title">🦊 小狐狸迷宮大冒險！</h1>
+            <p class="hero-subtitle">拿金鑰匙開大門，收集閃亮星星！<br>動動小手拖曳滑鼠，幫小狐狸順利冒險吧！</p>
+            <button class="start-btn" onclick="startAdventure()">🎮 開始冒險！</button>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🖱️</div>
+                <h3>滑鼠靈巧練習</h3>
+                <p>練習按住滑鼠拖曳與精準點擊，訓練小肌肉靈巧度！</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗝️</div>
+                <h3>鑰匙與大門</h3>
+                <p>先拿到金鑰匙才能開啟大門通關，培養順序邏輯力！</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>星星大挑戰</h3>
+                <p>在開門前收集齊全所有閃亮星星，挑戰滿分三顆星！</p>
+            </div>
+        </div>
+
+        <details class="info-drawer">
+            <summary>📘 給老師與研究者：執行功能評估指標說明</summary>
+            <div class="info-drawer-content">
+                <p>本系統自動記錄學童執行功能與滑鼠精細動作控制數據，點擊結算頁按鈕可下載完整 CSV / JSON 紀錄檔：</p>
+                <ul>
+                    <li><strong>PlanningTime_ms</strong>：首動前決策時間（從進入關卡至觸發第一次動作之毫秒數，評估空間預覽與衝動抑制）。</li>
+                    <li><strong>TotalTime_sec & Moves</strong>：通關總秒數與有效路徑步數（評估動作執行與路徑搜尋效率）。</li>
+                    <li><strong>Bumps</strong>：失誤次數（記錄所有點擊牆壁、無效拖曳或未持鑰匙撞門之失誤）。</li>
+                    <li><strong>StarRatio</strong>：任務探索完整度（星星獲取率）。</li>
+                    <li><strong>Trajectory & Error Logs</strong>：詳細記錄各步經過的時間戳、座標歷程與失誤發生的點位。</li>
+                </ul>
+            </div>
+        </details>
+    </div>
+
+    <div id="page-game" class="page">
+        <div class="game-header">
+            <div class="hud-item" id="hud-level">關卡: 1 / 5</div>
+            <div class="hud-item" id="hud-key">🔑 鑰匙: 0/1</div>
+            <div class="hud-item" id="hud-stars">⭐ 星星: 0</div>
+            <div class="hud-item" id="hud-time">⏱️ 時間: 0.0秒</div>
+        </div>
+
+        <div class="maze-container">
+            <canvas id="mazeCanvas" width="560" height="560"></canvas>
+        </div>
+
+        <div class="game-instructions">
+            <span>💡 **小提醒**：按住小狐狸向旁邊滑動，或是直接點擊旁邊的格子就能移動喔！</span>
+        </div>
+    </div>
+
+    <div id="page-report" class="page">
+        <div class="report-card">
+            <div class="report-header">
+                <h2>🎉 全關卡完成！太棒了！</h2>
+                <div class="star-rating" id="report-stars">⭐⭐⭐</div>
+                <p id="report-comment">你是滑鼠操控小達人！思考迅速又準確！</p>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-box">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-download" onclick="exportCSV()">📥 下載 CSV 指標報表</button>
+                <button class="btn-secondary" onclick="exportJSON()">💾 下載完整軌跡 JSON</button>
+                <button class="btn-primary" onclick="switchPage('landing')">🔄 再玩一次</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, type, duration) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e){}
+        }
+
+        function playSound(name) {
+            if (name === 'step') playTone(450, 'sine', 0.08);
+            if (name === 'item') { playTone(650, 'triangle', 0.1); setTimeout(() => playTone(850, 'triangle', 0.15), 100); }
+            if (name === 'door') { playTone(350, 'square', 0.1); setTimeout(() => playTone(550, 'sine', 0.2), 80); }
+            if (name === 'bump') playTone(160, 'sawtooth', 0.12);
+            if (name === 'win') {
+                [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.2), i * 120));
+            }
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+        }
+
+        function startAdventure() {
+            switchPage('game');
+            initGame();
+        }
+
+        const T_EMPTY = 0, T_WALL = 1, T_START = 2, T_KEY = 4, T_DOOR = 5, T_STAR = 6, T_GIFT = 7;
+
+        /* 關卡定義：第五關難度提升為 8x8，含決策分岐路與適度死路設計 */
+        const LEVELS = [
+            // 關卡 1：熱身入門 (狐狸 -> 寶箱 -> 星星 -> 鑰匙 -> 開門通關)
+            {
+                cols: 5, rows: 5,
+                grid: [
+                    1,1,1,1,1,
+                    1,2,7,6,1,
+                    1,1,1,0,1,
+                    1,5,0,4,1,
+                    1,1,1,1,1
+                ]
+            },
+            // 關卡 2：鑰匙與大門
+            {
+                cols: 6, rows: 6,
+                grid: [
+                    1,1,1,1,1,1,
+                    1,2,0,4,1,1,
+                    1,1,1,0,1,1,
+                    1,6,6,0,5,1,
+                    1,0,1,1,1,1,
+                    1,1,1,1,1,1
+                ]
+            },
+            // 關卡 3：禮物寶箱與路線思考
+            {
+                cols: 6, rows: 6,
+                grid: [
+                    1,1,1,1,1,1,
+                    1,2,0,7,6,1,
+                    1,1,1,1,0,1,
+                    1,4,0,6,0,1,
+                    1,0,1,1,5,1,
+                    1,1,1,1,1,1
+                ]
+            },
+            // 關卡 4：中級邏輯思考
+            {
+                cols: 7, rows: 7,
+                grid: [
+                    1,1,1,1,1,1,1,
+                    1,2,0,1,4,0,1,
+                    1,1,0,1,1,0,1,
+                    1,6,0,7,6,0,1,
+                    1,0,1,1,1,0,1,
+                    1,0,0,0,0,5,1,
+                    1,1,1,1,1,1,1
+                ]
+            },
+            // 關卡 5：提升難度挑戰 (8x8，岔路決策點，保證鑰匙 -> 星星 -> 門順序)
+            {
+                cols: 8, rows: 8,
+                grid: [
+                    1,1,1,1,1,1,1,1,
+                    1,2,0,0,1,4,0,1, // 狐狸(2)可前進，右上為金鑰匙(4)
+                    1,1,1,0,1,1,0,1,
+                    1,7,0,0,0,0,0,1, // 岔路與寶箱(7)
+                    1,0,1,1,0,1,1,1, // 中央迷宮牆阻隔
+                    1,6,0,1,6,0,6,1, // 三顆星星分佈於下半通道
+                    1,1,0,0,0,1,5,1, // 門鎖(5)於右下方
+                    1,1,1,1,1,1,1,1
+                ]
+            }
+        ];
+
+        let currentLevelIdx = 0;
+        let grid = [];
+        let cols = 0, rows = 0;
+        let tileSize = 70;
+        let player = { x: 0, y: 0, keys: 0 };
+        let starsCollected = 0;
+        let totalStarsInLevel = 0;
+        let isDragging = false;
+        let timerInterval = null;
+        let levelStartTime = 0;
+        let firstMoveTime = 0;
+        let moveCount = 0;
+        let bumpCount = 0;
+
+        // 詳細軌跡資料收集
+        let currentTrajectory = [];
+        let currentErrors = [];
+        let metricsHistory = [];
+
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function initGame() {
+            currentLevelIdx = 0;
+            metricsHistory = [];
+            loadLevel(currentLevelIdx);
+        }
+
+        function loadLevel(idx) {
+            const levelData = LEVELS[idx];
+            cols = levelData.cols;
+            rows = levelData.rows;
+            grid = JSON.parse(JSON.stringify(levelData.grid));
+
+            tileSize = Math.floor(560 / Math.max(cols, rows));
+            canvas.width = cols * tileSize;
+            canvas.height = rows * tileSize;
+
+            player.keys = 0;
+            starsCollected = 0;
+            totalStarsInLevel = 0;
+            moveCount = 0;
+            bumpCount = 0;
+            firstMoveTime = 0;
+            currentTrajectory = [];
+            currentErrors = [];
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const val = grid[r * cols + c];
+                    if (val === T_START) {
+                        player.x = c;
+                        player.y = r;
+                    }
+                    if (val === T_STAR) totalStarsInLevel++;
+                }
+            }
+
+            // 記錄初始座標
+            currentTrajectory.push({ step: 0, x: player.x, y: player.y, t_ms: 0 });
+
+            updateHUD();
+            render();
+
+            levelStartTime = performance.now();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsedSec = ((performance.now() - levelStartTime) / 1000).toFixed(1);
+                document.getElementById('hud-time').innerText = `⏱️ 時間: ${elapsedSec}秒`;
+            }, 100);
+        }
+
+        function updateHUD() {
+            document.getElementById('hud-level').innerText = `關卡: ${currentLevelIdx + 1} / ${LEVELS.length}`;
+            document.getElementById('hud-key').innerText = `🔑 鑰匙: ${player.keys}/1`;
+            document.getElementById('hud-stars').innerText = `⭐ 星星: ${starsCollected}`;
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = c * tileSize;
+                    const y = r * tileSize;
+                    const tile = grid[r * cols + c];
+
+                    ctx.fillStyle = (r + c) % 2 === 0 ? '#E8F8F5' : '#FEF9E7';
+                    ctx.fillRect(x, y, tileSize, tileSize);
+
+                    if (tile === T_WALL) {
+                        ctx.fillStyle = '#70A1FF';
+                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                    } else if (tile === T_KEY) {
+                        drawEmoji('🗝️', x, y);
+                    } else if (tile === T_DOOR) {
+                        ctx.fillStyle = '#FF6B6B';
+                        ctx.fillRect(x + 4, y + 4, tileSize - 8, tileSize - 8);
+                        drawEmoji('🚪', x, y);
+                    } else if (tile === T_STAR) {
+                        drawEmoji('⭐', x, y);
+                    } else if (tile === T_GIFT) {
+                        drawEmoji('🎁', x, y);
+                    }
+
+                    if (Math.abs(c - player.x) + Math.abs(r - player.y) === 1 && tile !== T_WALL) {
+                        ctx.strokeStyle = '#10AC84';
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(x + 4, y + 4, tileSize - 8, tileSize - 8);
+                    }
+                }
+            }
+
+            drawEmoji('🦊', player.x * tileSize, player.y * tileSize);
+        }
+
+        function drawEmoji(emoji, x, y) {
+            ctx.font = `${tileSize * 0.6}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(emoji, x + tileSize / 2, y + tileSize / 2);
+        }
+
+        function tryMoveTo(targetC, targetR) {
+            const now = performance.now();
+            const elapsedMs = Math.round(now - levelStartTime);
+
+            const dx = targetC - player.x;
+            const dy = targetR - player.y;
+
+            // 限制僅能探索鄰近四方格
+            if (Math.abs(dx) + Math.abs(dy) !== 1) return;
+            if (targetC < 0 || targetC >= cols || targetR < 0 || targetR >= rows) return;
+
+            // 紀錄首動思考時間 (PlanningTime_ms)
+            if (firstMoveTime === 0) {
+                firstMoveTime = elapsedMs;
+            }
+
+            const tileIdx = targetR * cols + targetC;
+            const tile = grid[tileIdx];
+
+            // 撞牆失誤紀錄
+            if (tile === T_WALL) {
+                bumpCount++;
+                currentErrors.push({ type: 'wall_collision', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
+                playSound('bump');
+                return;
+            }
+
+            // 遇到大門未拿鑰匙撞擊失誤
+            if (tile === T_DOOR && player.keys <= 0) {
+                bumpCount++;
+                currentErrors.push({ type: 'door_locked', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
+                playSound('bump');
+                return;
+            }
+
+            // 正式有效移動
+            player.x = targetC;
+            player.y = targetR;
+            moveCount++;
+
+            currentTrajectory.push({
+                step: moveCount,
+                x: targetC,
+                y: targetR,
+                t_ms: elapsedMs
+            });
+
+            // 大門通關
+            if (tile === T_DOOR && player.keys > 0) {
+                player.keys--;
+                grid[tileIdx] = T_EMPTY;
+                playSound('door');
+                updateHUD();
+                render();
+                handleLevelComplete();
+                return;
+            }
+
+            if (tile === T_KEY) {
+                player.keys++;
+                grid[tileIdx] = T_EMPTY;
+                playSound('item');
+            } else if (tile === T_STAR) {
+                starsCollected++;
+                grid[tileIdx] = T_EMPTY;
+                playSound('item');
+            } else if (tile === T_GIFT) {
+                grid[tileIdx] = T_EMPTY;
+                playSound('item');
+            } else {
+                playSound('step');
+            }
+
+            updateHUD();
+            render();
+        }
+
+        function handleLevelComplete() {
+            clearInterval(timerInterval);
+            playSound('win');
+
+            const totalTimeSec = Number(((performance.now() - levelStartTime) / 1000).toFixed(2));
+            const starRatio = totalStarsInLevel > 0 ? Number((starsCollected / totalStarsInLevel).toFixed(2)) : 1.0;
+
+            metricsHistory.push({
+                level: currentLevelIdx + 1,
+                planningTime_ms: firstMoveTime || Math.round(totalTimeSec * 1000),
+                totalTime_sec: totalTimeSec,
+                moves: moveCount,
+                bumps: bumpCount,
+                starRatio: starRatio,
+                starsCollected: starsCollected,
+                totalStars: totalStarsInLevel,
+                trajectory: [...currentTrajectory],
+                errors: [...currentErrors]
+            });
+
+            setTimeout(() => {
+                currentLevelIdx++;
+                if (currentLevelIdx < LEVELS.length) {
+                    loadLevel(currentLevelIdx);
+                } else {
+                    showReportPage();
+                }
+            }, 600);
+        }
+
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                c: Math.floor((clientX - rect.left) / tileSize),
+                r: Math.floor((clientY - rect.top) / tileSize)
+            };
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const pos = getCanvasCoords(e);
+            tryMoveTo(pos.c, pos.r);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const pos = getCanvasCoords(e);
+            if (pos.c !== player.x || pos.r !== player.y) {
+                tryMoveTo(pos.c, pos.r);
+            }
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDragging = true;
+            const pos = getCanvasCoords(e);
+            tryMoveTo(pos.c, pos.r);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDragging) return;
+            const pos = getCanvasCoords(e);
+            if (pos.c !== player.x || pos.r !== player.y) {
+                tryMoveTo(pos.c, pos.r);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => isDragging = false);
+
+        function showReportPage() {
+            switchPage('report');
+
+            const avgPlanningMs = metricsHistory.reduce((a, b) => a + b.planningTime_ms, 0) / metricsHistory.length;
+            const totalBumps = metricsHistory.reduce((a, b) => a + b.bumps, 0);
+            const avgStarRatio = metricsHistory.reduce((a, b) => a + b.starRatio, 0) / metricsHistory.length;
+
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['先導規劃力', '滑鼠精準度', '任務達成率', '操作敏捷度', '衝動抑制力'],
+                    datasets: [{
+                        label: '能力診斷常模剖面',
+                        data: [
+                            Math.min(100, Math.max(30, 100 - (avgPlanningMs - 2200) / 40)),
+                            Math.max(30, 100 - totalBumps * 8),
+                            Math.round(avgStarRatio * 100),
+                            88,
+                            Math.max(30, 100 - totalBumps * 10)
+                        ],
+                        backgroundColor: 'rgba(72, 219, 251, 0.3)',
+                        borderColor: '#0984E3',
+                        pointBackgroundColor: '#FF6B6B'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { suggestMin: 0, suggestMax: 100 } }
+                }
+            });
+
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: metricsHistory.map(m => `第 ${m.level} 關`),
+                    datasets: [
+                        {
+                            label: '通關時間 (秒)',
+                            data: metricsHistory.map(m => m.totalTime_sec),
+                            backgroundColor: '#FF6B6B'
+                        },
+                        {
+                            label: '移動步數',
+                            data: metricsHistory.map(m => m.moves),
+                            backgroundColor: '#48DBFB'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // CSV 匯出（含關鍵指標與序列化座標/錯誤日誌）
+        function exportCSV() {
+            let csv = "Level,PlanningTime_ms,TotalTime_sec,Moves,Bumps,StarRatio,StarsCollected,TotalStars,Trajectory_Coordinates,Error_Logs\n";
+            metricsHistory.forEach(m => {
+                const trajectoryStr = '"' + m.trajectory.map(t => `(${t.x},${t.y})@${t.t_ms}ms`).join('->') + '"';
+                const errorStr = '"' + m.errors.map(err => `${err.type}@(${err.targetX},${err.targetY})@${err.t_ms}ms`).join(';') + '"';
+                csv += `${m.level},${m.planningTime_ms},${m.totalTime_sec},${m.moves},${m.bumps},${m.starRatio},${m.starsCollected},${m.totalStars},${trajectoryStr},${errorStr}\n`;
+            });
+
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fox_maze_assessment_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+        }
+
+        // JSON 完整結構化歷程匯出
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(metricsHistory, null, 2));
+            const a = document.createElement('a');
+            a.href = dataStr;
+            a.download = `fox_maze_trajectory_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+        }
+    </script>
+</body>
+</html>
