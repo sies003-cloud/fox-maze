@@ -62,23 +62,6 @@
             text-shadow: 1px 1px 0px #FFEAA7;
         }
 
-        .nav-btn {
-            background: #FFEAA7;
-            border: 3px solid #FDCB6E;
-            padding: 8px 20px;
-            border-radius: 30px;
-            color: #2D3436;
-            font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-btn:hover {
-            background: #FDCB6E;
-            transform: scale(1.05);
-        }
-
         .page {
             display: none;
             width: 100%;
@@ -96,7 +79,7 @@
             background: #FFFFFF;
             border: 6px solid #FFD93D;
             border-radius: var(--radius-lg);
-            padding: 40px 20px;
+            padding: 40px 25px;
             margin-top: 20px;
             text-align: center;
             box-shadow: var(--shadow);
@@ -114,9 +97,48 @@
         .hero-subtitle {
             font-size: 1.3rem;
             color: #546E7A;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             line-height: 1.6;
             font-weight: 700;
+        }
+
+        /* 純學號輸入卡片 */
+        .login-card {
+            background: #F7F9FA;
+            border: 3px dashed #48DBFB;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 0 auto 30px auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #2D3436;
+        }
+
+        .input-group input {
+            padding: 10px 18px;
+            border-radius: 14px;
+            border: 3px solid #B2BEC3;
+            font-size: 1.3rem;
+            font-weight: 800;
+            width: 180px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #FF6B6B;
+            background-color: #FFF9E6;
         }
 
         .start-btn {
@@ -130,6 +152,8 @@
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
             transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            margin: 0 auto;
         }
 
         .start-btn:hover {
@@ -142,7 +166,7 @@
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
             width: 100%;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .feature-card {
@@ -155,48 +179,21 @@
         }
 
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
+            font-size: 2.8rem;
+            margin-bottom: 8px;
         }
 
         .feature-card h3 {
             margin-bottom: 8px;
             color: #2D3436;
-            font-size: 1.3rem;
+            font-size: 1.25rem;
         }
 
         .feature-card p {
             color: #636E72;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             line-height: 1.5;
-        }
-
-        .info-drawer {
-            width: 100%;
-            margin-top: 30px;
-            background: #FFFFFF;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow);
-            padding: 20px;
-            border: 2px dashed #0984E3;
-        }
-
-        .info-drawer summary {
-            font-weight: 800;
-            font-size: 1.1rem;
-            cursor: pointer;
-            color: #0984E3;
-            user-select: none;
-        }
-
-        .info-drawer-content {
-            margin-top: 15px;
-            color: var(--text-dark);
-            line-height: 1.6;
-            font-size: 0.95rem;
-            border-top: 2px solid #DFE6E9;
-            padding-top: 15px;
         }
 
         .game-header {
@@ -256,7 +253,7 @@
             background: #FFFFFF;
             border: 6px solid #10AC84;
             width: 100%;
-            padding: 30px;
+            padding: 35px 25px;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
             margin-top: 20px;
@@ -268,7 +265,7 @@
         }
 
         .star-rating {
-            font-size: 3rem;
+            font-size: 3.2rem;
             color: #FFD93D;
             margin: 10px 0;
             text-shadow: 2px 2px 0 #FF9F43;
@@ -291,50 +288,61 @@
             background: #F7F9FA;
             padding: 15px;
             border-radius: var(--radius-md);
-            height: 300px;
+            height: 280px;
             position: relative;
             border: 2px solid #C8D6E5;
         }
 
-        .btn-group {
+        .btn-group-final {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 25px;
+            gap: 30px;
+            margin-top: 35px;
             flex-wrap: wrap;
         }
 
-        .btn-secondary {
-            background: #8395A7;
+        .btn-replay {
+            background: linear-gradient(135deg, #10AC84, #1DD1A1);
             color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 30px;
-            font-weight: 800;
-            font-size: 1rem;
+            border: 3px solid #FFFFFF;
+            padding: 16px 36px;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 1.3rem;
             cursor: pointer;
+            box-shadow: 0 8px 20px rgba(16, 172, 132, 0.4);
+            transition: all 0.2s;
         }
 
-        .btn-primary {
-            background: #10AC84;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 30px;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
+        .btn-replay:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(16, 172, 132, 0.5);
         }
 
-        .btn-download {
-            background: #0984E3;
+        .btn-exit {
+            background: linear-gradient(135deg, #FF6B6B, #EE5253);
             color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 30px;
-            font-weight: 800;
-            font-size: 1rem;
+            border: 3px solid #FFFFFF;
+            padding: 16px 36px;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 1.3rem;
             cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-exit:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        .upload-status {
+            text-align: center;
+            font-weight: 800;
+            color: #0984E3;
+            margin-top: 15px;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -345,13 +353,23 @@
             <span>🦊</span>
             <span>小狐狸迷宮大冒險</span>
         </div>
-        <button class="nav-btn" onclick="switchPage('landing')">🏠 回首頁</button>
+        <div style="font-weight: 800; color: #2D3436; font-size: 1.1rem;" id="hud-user-tag"></div>
     </header>
 
+    <!-- 頁面 1: 首頁 -->
     <div id="page-landing" class="page active">
         <div class="hero-section">
             <h1 class="hero-title">🦊 小狐狸迷宮大冒險！</h1>
-            <p class="hero-subtitle">拿金鑰匙開大門，收集閃亮星星！<br>動動小手拖曳滑鼠，幫小狐狸順利冒險吧！</p>
+            <p class="hero-subtitle">拿金鑰匙開大門，收集閃亮星星！<br>請在下方輸入學號，按下按鈕就能開始囉！</p>
+            
+            <!-- 學生輸入區：純學號 -->
+            <div class="login-card">
+                <div class="input-group">
+                    <label for="student-id">🎓 請輸入學號：</label>
+                    <input type="text" id="student-id" placeholder="例如: 30105" maxlength="10" autofocus>
+                </div>
+            </div>
+
             <button class="start-btn" onclick="startAdventure()">🎮 開始冒險！</button>
         </div>
 
@@ -359,35 +377,22 @@
             <div class="feature-card">
                 <div class="feature-icon">🖱️</div>
                 <h3>滑鼠靈巧練習</h3>
-                <p>練習按住滑鼠拖曳與精準點擊，訓練小肌肉靈巧度！</p>
+                <p>練習按住滑鼠拖曳與精準點擊，手眼協調更棒！</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🗝️</div>
                 <h3>鑰匙與大門</h3>
-                <p>先拿到金鑰匙才能開啟大門通關，培養順序邏輯力！</p>
+                <p>先拿到金鑰匙才能開啟大門通關，培養思考力！</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⭐</div>
                 <h3>星星大挑戰</h3>
-                <p>在開門前收集齊全所有閃亮星星，挑戰滿分三顆星！</p>
+                <p>在開門前收集齊全所有閃亮星星，挑戰三顆星！</p>
             </div>
         </div>
-
-        <details class="info-drawer">
-            <summary>📘 給老師與研究者：執行功能評估指標說明</summary>
-            <div class="info-drawer-content">
-                <p>本系統自動記錄學童執行功能與滑鼠精細動作控制數據，點擊結算頁按鈕可下載完整 CSV / JSON 紀錄檔：</p>
-                <ul>
-                    <li><strong>PlanningTime_ms</strong>：首動前決策時間（從進入關卡至觸發第一次動作之毫秒數，評估空間預覽與衝動抑制）。</li>
-                    <li><strong>TotalTime_sec & Moves</strong>：通關總秒數與有效路徑步數（評估動作執行與路徑搜尋效率）。</li>
-                    <li><strong>Bumps</strong>：失誤次數（記錄所有點擊牆壁、無效拖曳或未持鑰匙撞門之失誤）。</li>
-                    <li><strong>StarRatio</strong>：任務探索完整度（星星獲取率）。</li>
-                    <li><strong>Trajectory & Error Logs</strong>：詳細記錄各步經過的時間戳、座標歷程與失誤發生的點位。</li>
-                </ul>
-            </div>
-        </details>
     </div>
 
+    <!-- 頁面 2: 遊戲進行畫面 -->
     <div id="page-game" class="page">
         <div class="game-header">
             <div class="hud-item" id="hud-level">關卡: 1 / 5</div>
@@ -405,12 +410,13 @@
         </div>
     </div>
 
+    <!-- 頁面 3: 診斷結算畫面 -->
     <div id="page-report" class="page">
         <div class="report-card">
             <div class="report-header">
                 <h2>🎉 全關卡完成！太棒了！</h2>
                 <div class="star-rating" id="report-stars">⭐⭐⭐</div>
-                <p id="report-comment">你是滑鼠操控小達人！思考迅速又準確！</p>
+                <p id="report-comment" style="font-size: 1.25rem; font-weight: 800; color: #2D3436;">你是滑鼠操控小達人！思考迅速又準確！</p>
             </div>
 
             <div class="chart-grid">
@@ -422,15 +428,21 @@
                 </div>
             </div>
 
-            <div class="btn-group">
-                <button class="btn-download" onclick="exportCSV()">📥 下載 CSV 指標報表</button>
-                <button class="btn-secondary" onclick="exportJSON()">💾 下載完整軌跡 JSON</button>
-                <button class="btn-primary" onclick="switchPage('landing')">🔄 再玩一次</button>
+            <div class="upload-status" id="upload-status-text">⏳ 正在記錄成績到雲端試算表...</div>
+
+            <div class="btn-group-final">
+                <button class="btn-replay" onclick="handleReplay()">🔄 點我，再玩一次</button>
+                <button class="btn-exit" onclick="handleExit()">🚪 點我，離開</button>
             </div>
         </div>
     </div>
 
     <script>
+        // -------------------------------------------------------------------------
+        // 已帶入 Google Apps Script 部署網址：
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhaXCZB3PBLW8b7ka-82129v5qikxz4s6MYIIzcHN_WxhYB4l1oitw-4_0Go3Bb2vW/exec";
+        // -------------------------------------------------------------------------
+
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type, duration) {
             try {
@@ -463,16 +475,27 @@
             document.getElementById('page-' + pageId).classList.add('active');
         }
 
+        let studentId = '';
+
         function startAdventure() {
+            const inputVal = document.getElementById('student-id').value.trim();
+
+            if (!inputVal) {
+                alert('請先輸入學號喔！');
+                return;
+            }
+
+            studentId = inputVal;
+            document.getElementById('hud-user-tag').innerText = `🎓 學號：${studentId}`;
+
             switchPage('game');
             initGame();
         }
 
         const T_EMPTY = 0, T_WALL = 1, T_START = 2, T_KEY = 4, T_DOOR = 5, T_STAR = 6, T_GIFT = 7;
 
-        /* 關卡定義：第五關難度提升為 8x8，含決策分岐路與適度死路設計 */
         const LEVELS = [
-            // 關卡 1：熱身入門 (狐狸 -> 寶箱 -> 星星 -> 鑰匙 -> 開門通關)
+            // 關卡 1
             {
                 cols: 5, rows: 5,
                 grid: [
@@ -483,7 +506,7 @@
                     1,1,1,1,1
                 ]
             },
-            // 關卡 2：鑰匙與大門
+            // 關卡 2
             {
                 cols: 6, rows: 6,
                 grid: [
@@ -495,7 +518,7 @@
                     1,1,1,1,1,1
                 ]
             },
-            // 關卡 3：禮物寶箱與路線思考
+            // 關卡 3
             {
                 cols: 6, rows: 6,
                 grid: [
@@ -507,7 +530,7 @@
                     1,1,1,1,1,1
                 ]
             },
-            // 關卡 4：中級邏輯思考
+            // 關卡 4
             {
                 cols: 7, rows: 7,
                 grid: [
@@ -520,17 +543,17 @@
                     1,1,1,1,1,1,1
                 ]
             },
-            // 關卡 5：提升難度挑戰 (8x8，岔路決策點，保證鑰匙 -> 星星 -> 門順序)
+            // 關卡 5 (8x8 決策分支挑戰)
             {
                 cols: 8, rows: 8,
                 grid: [
                     1,1,1,1,1,1,1,1,
-                    1,2,0,0,1,4,0,1, // 狐狸(2)可前進，右上為金鑰匙(4)
+                    1,2,0,0,1,4,0,1,
                     1,1,1,0,1,1,0,1,
-                    1,7,0,0,0,0,0,1, // 岔路與寶箱(7)
-                    1,0,1,1,0,1,1,1, // 中央迷宮牆阻隔
-                    1,6,0,1,6,0,6,1, // 三顆星星分佈於下半通道
-                    1,1,0,0,0,1,5,1, // 門鎖(5)於右下方
+                    1,7,0,0,0,0,0,1,
+                    1,0,1,1,0,1,1,1,
+                    1,6,0,1,6,0,6,1,
+                    1,1,0,0,0,1,5,1,
                     1,1,1,1,1,1,1,1
                 ]
             }
@@ -550,7 +573,6 @@
         let moveCount = 0;
         let bumpCount = 0;
 
-        // 詳細軌跡資料收集
         let currentTrajectory = [];
         let currentErrors = [];
         let metricsHistory = [];
@@ -594,7 +616,6 @@
                 }
             }
 
-            // 記錄初始座標
             currentTrajectory.push({ step: 0, x: player.x, y: player.y, t_ms: 0 });
 
             updateHUD();
@@ -666,11 +687,9 @@
             const dx = targetC - player.x;
             const dy = targetR - player.y;
 
-            // 限制僅能探索鄰近四方格
             if (Math.abs(dx) + Math.abs(dy) !== 1) return;
             if (targetC < 0 || targetC >= cols || targetR < 0 || targetR >= rows) return;
 
-            // 紀錄首動思考時間 (PlanningTime_ms)
             if (firstMoveTime === 0) {
                 firstMoveTime = elapsedMs;
             }
@@ -678,7 +697,6 @@
             const tileIdx = targetR * cols + targetC;
             const tile = grid[tileIdx];
 
-            // 撞牆失誤紀錄
             if (tile === T_WALL) {
                 bumpCount++;
                 currentErrors.push({ type: 'wall_collision', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
@@ -686,7 +704,6 @@
                 return;
             }
 
-            // 遇到大門未拿鑰匙撞擊失誤
             if (tile === T_DOOR && player.keys <= 0) {
                 bumpCount++;
                 currentErrors.push({ type: 'door_locked', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
@@ -694,7 +711,6 @@
                 return;
             }
 
-            // 正式有效移動
             player.x = targetC;
             player.y = targetR;
             moveCount++;
@@ -706,7 +722,6 @@
                 t_ms: elapsedMs
             });
 
-            // 大門通關
             if (tile === T_DOOR && player.keys > 0) {
                 player.keys--;
                 grid[tileIdx] = T_EMPTY;
@@ -866,32 +881,60 @@
                     maintainAspectRatio: false
                 }
             });
+
+            uploadDataToGoogleSheet();
         }
 
-        // CSV 匯出（含關鍵指標與序列化座標/錯誤日誌）
-        function exportCSV() {
-            let csv = "Level,PlanningTime_ms,TotalTime_sec,Moves,Bumps,StarRatio,StarsCollected,TotalStars,Trajectory_Coordinates,Error_Logs\n";
-            metricsHistory.forEach(m => {
-                const trajectoryStr = '"' + m.trajectory.map(t => `(${t.x},${t.y})@${t.t_ms}ms`).join('->') + '"';
-                const errorStr = '"' + m.errors.map(err => `${err.type}@(${err.targetX},${err.targetY})@${err.t_ms}ms`).join(';') + '"';
-                csv += `${m.level},${m.planningTime_ms},${m.totalTime_sec},${m.moves},${m.bumps},${m.starRatio},${m.starsCollected},${m.totalStars},${trajectoryStr},${errorStr}\n`;
-            });
+        let isUploaded = false;
+        async function uploadDataToGoogleSheet() {
+            if (isUploaded) return true;
+            const statusEl = document.getElementById('upload-status-text');
 
-            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `fox_maze_assessment_${new Date().toISOString().slice(0,10)}.csv`;
-            a.click();
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("您的_GOOGLE_APPS_SCRIPT_網址")) {
+                statusEl.innerText = "⚠️ 尚未設定 Google 試算表連結，資料暫存於本機。";
+                return true;
+            }
+
+            statusEl.innerText = "⏳ 正在傳送成績到雲端試算表...";
+
+            const payload = {
+                studentId: studentId,
+                records: metricsHistory
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                isUploaded = true;
+                statusEl.innerText = "✅ 成績已成功回傳給老師！";
+                return true;
+            } catch (err) {
+                console.error("Upload error:", err);
+                statusEl.innerText = "⚠️ 回傳雲端連線失敗，請提醒老師檢查網路。";
+                return false;
+            }
         }
 
-        // JSON 完整結構化歷程匯出
-        function exportJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(metricsHistory, null, 2));
-            const a = document.createElement('a');
-            a.href = dataStr;
-            a.download = `fox_maze_trajectory_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
+        async function handleReplay() {
+            await uploadDataToGoogleSheet();
+            isUploaded = false;
+            document.getElementById('student-id').value = '';
+            switchPage('landing');
+        }
+
+        async function handleExit() {
+            await uploadDataToGoogleSheet();
+            window.close();
+            document.body.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#E0F7FA;font-family:sans-serif;">
+                    <h1 style="font-size:3rem;color:#10AC84;">🎉 成績已送出！</h1>
+                    <p style="font-size:1.5rem;color:#2D3436;margin-top:20px;">感謝你的遊玩，現在可以直接關閉這個分頁或瀏覽器囉！</p>
+                </div>
+            `;
         }
     </script>
 </body>
