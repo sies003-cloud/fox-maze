@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小狐狸迷宮大冒險 - 國小三年級滑鼠訓練與執行功能評估</title>
+    <!-- Chart.js 報表庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --primary-hover: #EE5253;
+            --secondary: #48DBFB;
+            --accent: #FFD93D;
+            --bg-main: #E0F7FA;
+            --card-bg: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-muted: #636E72;
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #A8EDEA 0%, #FED6E3 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-attachment: fixed;
+        }
+
+        header {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #FF6B6B;
+            text-shadow: 1px 1px 0px #FFEAA7;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .hero-section {
+            background: #FFFFFF;
+            border: 6px solid #FFD93D;
+            border-radius: var(--radius-lg);
+            padding: 40px 25px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            width: 100%;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            color: #FF6B6B;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px #FFEAA7;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #546E7A;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+
+        /* 純學號輸入卡片 */
+        .login-card {
+            background: #F7F9FA;
+            border: 3px dashed #48DBFB;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 0 auto 30px auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #2D3436;
+        }
+
+        .input-group input {
+            padding: 10px 18px;
+            border-radius: 14px;
+            border: 3px solid #B2BEC3;
+            font-size: 1.3rem;
+            font-weight: 800;
+            width: 180px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #FF6B6B;
+            background-color: #FFF9E6;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 900;
+            padding: 18px 50px;
+            border: 4px solid #FFFFFF;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.6);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 25px;
+        }
+
+        .feature-card {
+            background: #FFFFFF;
+            border: 4px solid #48DBFB;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 8px;
+            color: #2D3436;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: #636E72;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #FFFFFF;
+            border: 4px solid #FFD93D;
+            padding: 15px 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .hud-item {
+            font-weight: 900;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2D3436;
+        }
+
+        .maze-container {
+            position: relative;
+            background: #FFFFFF;
+            border: 6px solid #48DBFB;
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            user-select: none;
+        }
+
+        canvas {
+            border-radius: 16px;
+            background: #E8F8F5;
+            cursor: pointer;
+        }
+
+        .game-instructions {
+            margin-top: 15px;
+            background: #FFF9E6;
+            border: 3px solid #FFEAA7;
+            color: #D35400;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .report-card {
+            background: #FFFFFF;
+            border: 6px solid #10AC84;
+            width: 100%;
+            padding: 35px 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .star-rating {
+            font-size: 3.2rem;
+            color: #FFD93D;
+            margin: 10px 0;
+            text-shadow: 2px 2px 0 #FF9F43;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-box {
+            background: #F7F9FA;
+            padding: 15px;
+            border-radius: var(--radius-md);
+            height: 280px;
+            position: relative;
+            border: 2px solid #C8D6E5;
+        }
+
+        .btn-group-final {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .btn-replay {
+            background: linear-gradient(135deg, #10AC84, #1DD1A1);
+            color: white;
+            border: 3px solid #FFFFFF;
+            padding: 16px 36px;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(16, 172, 132, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-replay:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(16, 172, 132, 0.5);
+        }
+
+        .btn-exit {
+            background: linear-gradient(135deg, #FF6B6B, #EE5253);
+            color: white;
+            border: 3px solid #FFFFFF;
+            padding: 16px 36px;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-exit:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        .upload-status {
+            text-align: center;
+            font-weight: 800;
+            color: #0984E3;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-group">
+            <span>🦊</span>
+            <span>小狐狸迷宮大冒險</span>
+        </div>
+        <div style="font-weight: 800; color: #2D3436; font-size: 1.1rem;" id="hud-user-tag"></div>
+    </header>
+
+    <!-- 頁面 1: 首頁 -->
+    <div id="page-landing" class="page active">
+        <div class="hero-section">
+            <h1 class="hero-title">🦊 小狐狸迷宮大冒險！</h1>
+            <p class="hero-subtitle">拿金鑰匙開大門，收集閃亮星星！<br>請在下方輸入學號，按下按鈕就能開始囉！</p>
+            
+            <!-- 學生輸入區：純學號 -->
+            <div class="login-card">
+                <div class="input-group">
+                    <label for="student-id">🎓 請輸入學號：</label>
+                    <input type="text" id="student-id" placeholder="例如: 30105" maxlength="10" autofocus>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startAdventure()">🎮 開始冒險！</button>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🖱️</div>
+                <h3>滑鼠靈巧練習</h3>
+                <p>練習按住滑鼠拖曳與精準點擊，手眼協調更棒！</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗝️</div>
+                <h3>鑰匙與大門</h3>
+                <p>先拿到金鑰匙才能開啟大門通關，培養思考力！</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>星星大挑戰</h3>
+                <p>在開門前收集齊全所有閃亮星星，挑戰三顆星！</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁面 2: 遊戲進行畫面 -->
+    <div id="page-game" class="page">
+        <div class="game-header">
+            <div class="hud-item" id="hud-level">關卡: 1 / 5</div>
+            <div class="hud-item" id="hud-key">🔑 鑰匙: 0/1</div>
+            <div class="hud-item" id="hud-stars">⭐ 星星: 0</div>
+            <div class="hud-item" id="hud-time">⏱️ 時間: 0.0秒</div>
+        </div>
+
+        <div class="maze-container">
+            <canvas id="mazeCanvas" width="560" height="560"></canvas>
+        </div>
+
+        <div class="game-instructions">
+            <span>💡 **小提醒**：按住小狐狸向旁邊滑動，或是直接點擊旁邊的格子就能移動喔！</span>
+        </div>
+    </div>
+
+    <!-- 頁面 3: 診斷結算畫面 -->
+    <div id="page-report" class="page">
+        <div class="report-card">
+            <div class="report-header">
+                <h2>🎉 全關卡完成！太棒了！</h2>
+                <div class="star-rating" id="report-stars">⭐⭐⭐</div>
+                <p id="report-comment" style="font-size: 1.25rem; font-weight: 800; color: #2D3436;">你是滑鼠操控小達人！思考迅速又準確！</p>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-box">
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <div class="upload-status" id="upload-status-text">⏳ 正在記錄成績到雲端試算表...</div>
+
+            <div class="btn-group-final">
+                <button class="btn-replay" onclick="handleReplay()">🔄 點我，再玩一次</button>
+                <button class="btn-exit" onclick="handleExit()">🚪 點我，離開</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // -------------------------------------------------------------------------
+        // 已帶入 Google Apps Script 部署網址：
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhaXCZB3PBLW8b7ka-82129v5qikxz4s6MYIIzcHN_WxhYB4l1oitw-4_0Go3Bb2vW/exec";
+        // -------------------------------------------------------------------------
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(freq, type, duration) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e){}
+        }
+
+        function playSound(name) {
+            if (name === 'step') playTone(450, 'sine', 0.08);
+            if (name === 'item') { playTone(650, 'triangle', 0.1); setTimeout(() => playTone(850, 'triangle', 0.15), 100); }
+            if (name === 'door') { playTone(350, 'square', 0.1); setTimeout(() => playTone(550, 'sine', 0.2), 80); }
+            if (name === 'bump') playTone(160, 'sawtooth', 0.12);
+            if (name === 'win') {
+                [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.2), i * 120));
+            }
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+        }
+
+        let studentId = '';
+
+        function startAdventure() {
+            const inputVal = document.getElementById('student-id').value.trim();
+
+            if (!inputVal) {
+                alert('請先輸入學號喔！');
+                return;
+            }
+
+            studentId = inputVal;
+            document.getElementById('hud-user-tag').innerText = `🎓 學號：${studentId}`;
+
+            switchPage('game');
+            initGame();
+        }
+
+        const T_EMPTY = 0, T_WALL = 1, T_START = 2, T_KEY = 4, T_DOOR = 5, T_STAR = 6, T_GIFT = 7;
+
+        const LEVELS = [
+            // 關卡 1
+            {
+                cols: 5, rows: 5,
+                grid: [
+                    1,1,1,1,1,
+                    1,2,7,6,1,
+                    1,1,1,0,1,
+                    1,5,0,4,1,
+                    1,1,1,1,1
+                ]
+            },
+            // 關卡 2
+            {
+                cols: 6, rows: 6,
+                grid: [
+                    1,1,1,1,1,1,
+                    1,2,0,4,1,1,
+                    1,1,1,0,1,1,
+                    1,6,6,0,5,1,
+                    1,0,1,1,1,1,
+                    1,1,1,1,1,1
+                ]
+            },
+            // 關卡 3
+            {
+                cols: 6, rows: 6,
+                grid: [
+                    1,1,1,1,1,1,
+                    1,2,0,7,6,1,
+                    1,1,1,1,0,1,
+                    1,4,0,6,0,1,
+                    1,0,1,1,5,1,
+                    1,1,1,1,1,1
+                ]
+            },
+            // 關卡 4
+            {
+                cols: 7, rows: 7,
+                grid: [
+                    1,1,1,1,1,1,1,
+                    1,2,0,1,4,0,1,
+                    1,1,0,1,1,0,1,
+                    1,6,0,7,6,0,1,
+                    1,0,1,1,1,0,1,
+                    1,0,0,0,0,5,1,
+                    1,1,1,1,1,1,1
+                ]
+            },
+            // 關卡 5 (8x8 決策分支挑戰)
+            {
+                cols: 8, rows: 8,
+                grid: [
+                    1,1,1,1,1,1,1,1,
+                    1,2,0,0,1,4,0,1,
+                    1,1,1,0,1,1,0,1,
+                    1,7,0,0,0,0,0,1,
+                    1,0,1,1,0,1,1,1,
+                    1,6,0,1,6,0,6,1,
+                    1,1,0,0,0,1,5,1,
+                    1,1,1,1,1,1,1,1
+                ]
+            }
+        ];
+
+        let currentLevelIdx = 0;
+        let grid = [];
+        let cols = 0, rows = 0;
+        let tileSize = 70;
+        let player = { x: 0, y: 0, keys: 0 };
+        let starsCollected = 0;
+        let totalStarsInLevel = 0;
+        let isDragging = false;
+        let timerInterval = null;
+        let levelStartTime = 0;
+        let firstMoveTime = 0;
+        let moveCount = 0;
+        let bumpCount = 0;
+
+        let currentTrajectory = [];
+        let currentErrors = [];
+        let metricsHistory = [];
+
+        const canvas = document.getElementById('mazeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function initGame() {
+            currentLevelIdx = 0;
+            metricsHistory = [];
+            loadLevel(currentLevelIdx);
+        }
+
+        function loadLevel(idx) {
+            const levelData = LEVELS[idx];
+            cols = levelData.cols;
+            rows = levelData.rows;
+            grid = JSON.parse(JSON.stringify(levelData.grid));
+
+            tileSize = Math.floor(560 / Math.max(cols, rows));
+            canvas.width = cols * tileSize;
+            canvas.height = rows * tileSize;
+
+            player.keys = 0;
+            starsCollected = 0;
+            totalStarsInLevel = 0;
+            moveCount = 0;
+            bumpCount = 0;
+            firstMoveTime = 0;
+            currentTrajectory = [];
+            currentErrors = [];
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const val = grid[r * cols + c];
+                    if (val === T_START) {
+                        player.x = c;
+                        player.y = r;
+                    }
+                    if (val === T_STAR) totalStarsInLevel++;
+                }
+            }
+
+            currentTrajectory.push({ step: 0, x: player.x, y: player.y, t_ms: 0 });
+
+            updateHUD();
+            render();
+
+            levelStartTime = performance.now();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsedSec = ((performance.now() - levelStartTime) / 1000).toFixed(1);
+                document.getElementById('hud-time').innerText = `⏱️ 時間: ${elapsedSec}秒`;
+            }, 100);
+        }
+
+        function updateHUD() {
+            document.getElementById('hud-level').innerText = `關卡: ${currentLevelIdx + 1} / ${LEVELS.length}`;
+            document.getElementById('hud-key').innerText = `🔑 鑰匙: ${player.keys}/1`;
+            document.getElementById('hud-stars').innerText = `⭐ 星星: ${starsCollected}`;
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = c * tileSize;
+                    const y = r * tileSize;
+                    const tile = grid[r * cols + c];
+
+                    ctx.fillStyle = (r + c) % 2 === 0 ? '#E8F8F5' : '#FEF9E7';
+                    ctx.fillRect(x, y, tileSize, tileSize);
+
+                    if (tile === T_WALL) {
+                        ctx.fillStyle = '#70A1FF';
+                        ctx.fillRect(x + 2, y + 2, tileSize - 4, tileSize - 4);
+                    } else if (tile === T_KEY) {
+                        drawEmoji('🗝️', x, y);
+                    } else if (tile === T_DOOR) {
+                        ctx.fillStyle = '#FF6B6B';
+                        ctx.fillRect(x + 4, y + 4, tileSize - 8, tileSize - 8);
+                        drawEmoji('🚪', x, y);
+                    } else if (tile === T_STAR) {
+                        drawEmoji('⭐', x, y);
+                    } else if (tile === T_GIFT) {
+                        drawEmoji('🎁', x, y);
+                    }
+
+                    if (Math.abs(c - player.x) + Math.abs(r - player.y) === 1 && tile !== T_WALL) {
+                        ctx.strokeStyle = '#10AC84';
+                        ctx.lineWidth = 4;
+                        ctx.strokeRect(x + 4, y + 4, tileSize - 8, tileSize - 8);
+                    }
+                }
+            }
+
+            drawEmoji('🦊', player.x * tileSize, player.y * tileSize);
+        }
+
+        function drawEmoji(emoji, x, y) {
+            ctx.font = `${tileSize * 0.6}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(emoji, x + tileSize / 2, y + tileSize / 2);
+        }
+
+        function tryMoveTo(targetC, targetR) {
+            const now = performance.now();
+            const elapsedMs = Math.round(now - levelStartTime);
+
+            const dx = targetC - player.x;
+            const dy = targetR - player.y;
+
+            if (Math.abs(dx) + Math.abs(dy) !== 1) return;
+            if (targetC < 0 || targetC >= cols || targetR < 0 || targetR >= rows) return;
+
+            if (firstMoveTime === 0) {
+                firstMoveTime = elapsedMs;
+            }
+
+            const tileIdx = targetR * cols + targetC;
+            const tile = grid[tileIdx];
+
+            if (tile === T_WALL) {
+                bumpCount++;
+                currentErrors.push({ type: 'wall_collision', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
+                playSound('bump');
+                return;
+            }
+
+            if (tile === T_DOOR && player.keys <= 0) {
+                bumpCount++;
+                currentErrors.push({ type: 'door_locked', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
+                playSound('bump');
+                return;
+            }
+
+            player.x = targetC;
+            player.y = targetR;
+            moveCount++;
+
+            currentTrajectory.push({
+                step: moveCount,
+                x: targetC,
+                y: targetR,
+                t_ms: elapsedMs
+            });
+
+            if (tile === T_DOOR && player.keys > 0) {
+                player.keys--;
+                grid[tileIdx] = T_EMPTY;
+                playSound('door');
+                updateHUD();
+                render();
+                handleLevelComplete();
+                return;
+            }
+
+            if (tile === T_KEY) {
+                player.keys++;
+                grid[tileIdx] = T_EMPTY;
+                playSound('item');
+            } else if (tile === T_STAR) {
+                starsCollected++;
+                grid[tileIdx] = T_EMPTY;
+                playSound('item');
+            } else if (tile === T_GIFT) {
+                grid[tileIdx] = T_EMPTY;
+                playSound('item');
+            } else {
+                playSound('step');
+            }
+
+            updateHUD();
+            render();
+        }
+
+        function handleLevelComplete() {
+            clearInterval(timerInterval);
+            playSound('win');
+
+            const totalTimeSec = Number(((performance.now() - levelStartTime) / 1000).toFixed(2));
+            const starRatio = totalStarsInLevel > 0 ? Number((starsCollected / totalStarsInLevel).toFixed(2)) : 1.0;
+
+            metricsHistory.push({
+                level: currentLevelIdx + 1,
+                planningTime_ms: firstMoveTime || Math.round(totalTimeSec * 1000),
+                totalTime_sec: totalTimeSec,
+                moves: moveCount,
+                bumps: bumpCount,
+                starRatio: starRatio,
+                starsCollected: starsCollected,
+                totalStars: totalStarsInLevel,
+                trajectory: [...currentTrajectory],
+                errors: [...currentErrors]
+            });
+
+            setTimeout(() => {
+                currentLevelIdx++;
+                if (currentLevelIdx < LEVELS.length) {
+                    loadLevel(currentLevelIdx);
+                } else {
+                    showReportPage();
+                }
+            }, 600);
+        }
+
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                c: Math.floor((clientX - rect.left) / tileSize),
+                r: Math.floor((clientY - rect.top) / tileSize)
+            };
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const pos = getCanvasCoords(e);
+            tryMoveTo(pos.c, pos.r);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const pos = getCanvasCoords(e);
+            if (pos.c !== player.x || pos.r !== player.y) {
+                tryMoveTo(pos.c, pos.r);
+            }
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDragging = true;
+            const pos = getCanvasCoords(e);
+            tryMoveTo(pos.c, pos.r);
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDragging) return;
+            const pos = getCanvasCoords(e);
+            if (pos.c !== player.x || pos.r !== player.y) {
+                tryMoveTo(pos.c, pos.r);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => isDragging = false);
+
+        function showReportPage() {
+            switchPage('report');
+
+            const avgPlanningMs = metricsHistory.reduce((a, b) => a + b.planningTime_ms, 0) / metricsHistory.length;
+            const totalBumps = metricsHistory.reduce((a, b) => a + b.bumps, 0);
+            const avgStarRatio = metricsHistory.reduce((a, b) => a + b.starRatio, 0) / metricsHistory.length;
+
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['先導規劃力', '滑鼠精準度', '任務達成率', '操作敏捷度', '衝動抑制力'],
+                    datasets: [{
+                        label: '能力診斷常模剖面',
+                        data: [
+                            Math.min(100, Math.max(30, 100 - (avgPlanningMs - 2200) / 40)),
+                            Math.max(30, 100 - totalBumps * 8),
+                            Math.round(avgStarRatio * 100),
+                            88,
+                            Math.max(30, 100 - totalBumps * 10)
+                        ],
+                        backgroundColor: 'rgba(72, 219, 251, 0.3)',
+                        borderColor: '#0984E3',
+                        pointBackgroundColor: '#FF6B6B'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { suggestMin: 0, suggestMax: 100 } }
+                }
+            });
+
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: metricsHistory.map(m => `第 ${m.level} 關`),
+                    datasets: [
+                        {
+                            label: '通關時間 (秒)',
+                            data: metricsHistory.map(m => m.totalTime_sec),
+                            backgroundColor: '#FF6B6B'
+                        },
+                        {
+                            label: '移動步數',
+                            data: metricsHistory.map(m => m.moves),
+                            backgroundColor: '#48DBFB'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            uploadDataToGoogleSheet();
+        }
+
+        let isUploaded = false;
+        async function uploadDataToGoogleSheet() {
+            if (isUploaded) return true;
+            const statusEl = document.getElementById('upload-status-text');
+
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("您的_GOOGLE_APPS_SCRIPT_網址")) {
+                statusEl.innerText = "⚠️ 尚未設定 Google 試算表連結，資料暫存於本機。";
+                return true;
+            }
+
+            statusEl.innerText = "⏳ 正在傳送成績到雲端試算表...";
+
+            const payload = {
+                studentId: studentId,
+                records: metricsHistory
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                isUploaded = true;
+                statusEl.innerText = "✅ 成績已成功回傳給老師！";
+                return true;
+            } catch (err) {
+                console.error("Upload error:", err);
+                statusEl.innerText = "⚠️ 回傳雲端連線失敗，請提醒老師檢查網路。";
+                return false;
+            }
+        }
+
+        async function handleReplay() {
+            await uploadDataToGoogleSheet();
+            isUploaded = false;
+            document.getElementById('student-id').value = '';
+            switchPage('landing');
+        }
+
+        async function handleExit() {
+            await uploadDataToGoogleSheet();
+            window.close();
+            document.body.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#E0F7FA;font-family:sans-serif;">
+                    <h1 style="font-size:3rem;color:#10AC84;">🎉 成績已送出！</h1>
+                    <p style="font-size:1.5rem;color:#2D3436;margin-top:20px;">感謝你的遊玩，現在可以直接關閉這個分頁或瀏覽器囉！</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
