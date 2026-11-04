@@ -402,7 +402,7 @@
         </div>
 
         <div class="game-instructions">
-            <span>💡 **小提醒**：按住小狐狸向旁邊滑動，或是直接點擊旁邊的綠色框框就能移動喔！</span>
+            <span>💡 **小提醒**：按住小狐狸向旁邊滑動，或是直接點擊身旁的綠色框框就能移動喔！</span>
         </div>
     </div>
 
@@ -668,52 +668,66 @@
         }
 
         function tryMoveTo(targetC, targetR) {
+            if (targetC < 0 || targetC >= cols || targetR < 0 || targetR >= rows) return;
+
             const now = performance.now();
             const elapsedMs = Math.round(now - levelStartTime);
 
-            const dx = targetC - player.x;
-            const dy = targetR - player.y;
-
-            // 1. 調整點：點選非相鄰格子（無綠框指引區）計入 invalid_distance 失誤
-            if (Math.abs(dx) + Math.abs(dy) !== 1) {
-                if (targetC !== player.x || targetR !== player.y) {
-                    bumpCount++;
-                    currentErrors.push({
-                        type: 'invalid_distance',
-                        targetX: targetC,
-                        targetY: targetR,
-                        t_ms: elapsedMs
-                    });
-                    playSound('bump');
-                }
-                return;
-            }
-
-            if (targetC < 0 || targetC >= cols || targetR < 0 || targetR >= rows) return;
-
-            if (firstMoveTime === 0) {
+            // 確保任何首次嘗試（即便失誤）都能正確記錄前導規劃思考時間
+            if (firstMoveTime === 0 && (targetC !== player.x || targetR !== player.y)) {
                 firstMoveTime = elapsedMs;
             }
+
+            const dx = targetC - player.x;
+            const dy = targetR - player.y;
+            const dist = Math.abs(dx) + Math.abs(dy);
+
+            // 原地點擊不作處理
+            if (dist === 0) return;
 
             const tileIdx = targetR * cols + targetC;
             const tile = grid[tileIdx];
 
-            // 2. 撞牆失誤
+            // 1. 優先層：距離 >= 2（點擊非綠框範圍外，包含兩步以外的牆壁/空地/道具）
+            if (dist > 1) {
+                bumpCount++;
+                currentErrors.push({
+                    type: 'invalid_distance',
+                    targetX: targetC,
+                    targetY: targetR,
+                    t_ms: elapsedMs
+                });
+                playSound('bump');
+                return;
+            }
+
+            // 2. 綠框範圍內（dist == 1）點到相鄰牆壁
             if (tile === T_WALL) {
                 bumpCount++;
-                currentErrors.push({ type: 'wall_collision', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
+                currentErrors.push({ 
+                    type: 'wall_collision', 
+                    targetX: targetC, 
+                    targetY: targetR, 
+                    t_ms: elapsedMs 
+                });
                 playSound('bump');
                 return;
             }
 
-            // 3. 未持鑰匙撞門失誤
+            // 3. 綠框範圍內（dist == 1）未持鑰匙撞門
             if (tile === T_DOOR && player.keys <= 0) {
                 bumpCount++;
-                currentErrors.push({ type: 'door_locked', targetX: targetC, targetY: targetR, t_ms: elapsedMs });
+                currentErrors.push({ 
+                    type: 'door_locked', 
+                    targetX: targetC, 
+                    targetY: targetR, 
+                    t_ms: elapsedMs 
+                });
                 playSound('bump');
                 return;
             }
 
+            // 4. 合法移動
             player.x = targetC;
             player.y = targetR;
             moveCount++;
